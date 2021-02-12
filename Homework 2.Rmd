@@ -115,3 +115,4 @@ F %>% group_by(month, day) %>%
 
 ```
 
+From the plot, we can say there is a patterm and the proportion of cancelled flights is related to the average delay
