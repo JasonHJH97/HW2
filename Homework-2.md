@@ -12,8 +12,8 @@ F<-flights
 ## 1.1 How many flights have a missing dep\_time?
 
 ``` r
-Missing<-which(is.na(F$dep_time)==TRUE)
-length(Missing)
+Missing<-F%>%filter(is.na(dep_delay))
+dim(Missing)[1]
 ```
 
     ## [1] 8255
@@ -53,7 +53,7 @@ There are 5 variables having missing value, which are “dep\_time”,
 
 These rows might represent the flights were canceled
 
-# 2\.
+# 2\. Problem 2
 
 ``` r
 dpt<-as.character(F$dep_time)
@@ -97,3 +97,18 @@ F$sched_dep_time<-new_scht
 
 write.csv(F, "New Flights.csv")
 ```
+
+# 3\. Problem 3
+
+``` r
+F %>% group_by(month, day) %>%
+  summarize(A_D_D= mean(dep_delay, na.rm = TRUE),
+            PC= sum(is.na(dep_time)/n())) %>%
+  ggplot(mapping = aes(x = A_D_D, y = PC)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
+```
+
+    ## `geom_smooth()` using formula 'y ~ x'
+
+![](Homework-2_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->

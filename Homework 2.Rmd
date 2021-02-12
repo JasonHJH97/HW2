@@ -9,6 +9,8 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 library(nycflights13)
 library(ggplot2)
+library(dplyr)
+library(magrittr)
 ```
 
 # 1.Problem 1
@@ -20,8 +22,8 @@ F<-flights
 ## 1.1 How many flights have a missing dep_time?
 
 ```{r}
-Missing<-which(is.na(F$dep_time)==TRUE)
-length(Missing)
+Missing<-F%>%filter(is.na(dep_delay))
+dim(Missing)[1]
 ```
 
 There are 8255 flights have a missing dep_time
@@ -56,7 +58,7 @@ There are 5 variables having missing value, which are "dep_time", "dep_delay", "
 
 These rows might represent the flights were canceled
 
-# 2. 
+# 2. Problem 2
 ```{r}
 dpt<-as.character(F$dep_time)
 scht<-as.character(F$sched_dep_time)
@@ -98,6 +100,18 @@ F$dep_time<-new_dpt
 F$sched_dep_time<-new_scht
 
 write.csv(F, "New Flights.csv")
+
+```
+
+# 3. Problem 3
+
+```{r}
+F %>% group_by(month, day) %>%
+  summarize(A_D_D= mean(dep_delay, na.rm = TRUE),
+            PC= sum(is.na(dep_time)/n())) %>%
+  ggplot(mapping = aes(x = A_D_D, y = PC)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE)
 
 ```
 
